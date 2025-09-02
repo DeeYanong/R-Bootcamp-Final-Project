@@ -1,0 +1,82 @@
+---
+title: "Final Project - DnD Challenge Rating"
+author: "Dee Yanong"
+format: html
+editor: visual
+---
+
+## Install/load Packages
+Pacman package will load and auto-install (if missing) packages in one line
+```{r}
+#install.packages("pacman")
+
+pacman::p_load(gtsummary, skimr, dplyr, readr, tidyverse, ggplot2, broom, data.table, stringr)
+```
+
+## Import D&D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)
+
+General idea: Which monster stats best predicts challenge rating?
+
+Read csv files: classes, equipment, monsters, races, spells
+
+```{r}
+#DnD <- unzip("C:/Users/deeya/OneDrive/Desktop/EMORY MPH/Thesis/R Bootcamp/R Bootcamp Final Project/DnD_Dataset.zip")
+
+#classes <- read.csv("classes.csv")
+#equipment <- read.csv("equipment.csv")
+monsters <- read.csv("monsters.csv")
+#races <- read.csv("races.csv")
+#spells <- read.csv("spells.csv")
+
+```
+## Table 1 - use monsters dataset
+- Explore dataset, then create Table 1. 
+- Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma
+- Clean up data
+
+```{r}
+skimr::skim(monsters)
+colnames(monsters)
+
+monster_clean <- monsters %>%
+	mutate (dice_group = case_when(str_detect(hit_dice, "d6$") ~ "d6",
+																 str_detect(hit_dice, "d8$") ~ "d8",
+																 str_detect(hit_dice, "d10$") ~ "d10",
+																 str_detect(hit_dice, "d12$") ~ "d12",
+																 str_detect(hit_dice, "d20$") ~ "d20",
+																 TRUE ~ "other")) %>%
+  group_by(monsters$size) %>%
+  rename(Size = size,
+  			 Type = type,
+         Strength = strength,
+  			 Dexterity = dexterity,
+  			 Constitution = constitution,
+  			 Intelligence = intelligence,
+  			 Wisdom = wisdom,
+  			 Charisma = charisma)
+
+monster_table <- monster_clean %>%
+  select(Size, Type, armor_class, hit_points, dice_group, Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma) %>%
+  tbl_summary(by = Size,
+              missing = "no",
+              statistic = list(all_continuous() ~ "{mean} ({sd})",
+                               all_categorical() ~ "{n} ({p}%)")) %>%
+  add_p(test.args = all_categorical() ~ list(simulate.p.value = TRUE)) %>%
+  bold_labels() 
+
+print(monster_table)
+```
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
