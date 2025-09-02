@@ -32,11 +32,15 @@ monsters <- read.csv("monsters.csv")
 ## Table 1 - use monsters dataset
 - Explore dataset, then create Table 1. 
 - Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma
+- Check for normality: armor_class, charisma, constitution, dexterity, hit_points, intelligence, strength, wisdom
+	- if bell-shaped use: ANOVA (aov)
+	- if skewed use: Kruskal-Wallis (kruskal.test)
 - Clean up data
 
 ```{r}
 skimr::skim(monsters)
 colnames(monsters)
+lapply(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom")],hist)
 
 monster_clean <- monsters %>%
 	mutate (dice_group = case_when(str_detect(hit_dice, "d6$") ~ "d6",
@@ -44,39 +48,33 @@ monster_clean <- monsters %>%
 																 str_detect(hit_dice, "d10$") ~ "d10",
 																 str_detect(hit_dice, "d12$") ~ "d12",
 																 str_detect(hit_dice, "d20$") ~ "d20",
-																 TRUE ~ "other")) %>%
-  group_by(monsters$size) %>%
-  rename(Size = size,
-  			 Type = type,
-         Strength = strength,
-  			 Dexterity = dexterity,
-  			 Constitution = constitution,
-  			 Intelligence = intelligence,
-  			 Wisdom = wisdom,
-  			 Charisma = charisma)
+																 TRUE ~ "other"),
+					armor_class = as.numeric(armor_class),
+					charisma = as.numeric(charisma),
+					constitution = as.numeric(constitution),
+					dexterity = as.numeric(dexterity),
+					hit_points = as.numeric(hit_points),
+					intelligence = as.numeric(intelligence),
+					strength = as.numeric(strength),
+					wisdom = as.numeric(wisdom)) %>%
+	select(size,type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma)
 
-monster_table <- monster_clean %>%
-  select(Size, Type, armor_class, hit_points, dice_group, Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma) %>%
-  tbl_summary(by = Size,
-              missing = "no",
-              statistic = list(all_continuous() ~ "{mean} ({sd})",
-                               all_categorical() ~ "{n} ({p}%)")) %>%
-  add_p(test.args = all_categorical() ~ list(simulate.p.value = TRUE)) %>%
-  bold_labels() 
-
-print(monster_table)
+monster_clean %>%
+tbl_summary(by = size,
+						include = c(type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma),
+						label = list(type ~ "Class Type",
+												 armor_class ~ "Armor Class",
+												 hit_points ~ "Hit Points",
+												 dice_group ~ "Hit Dice",
+												 strength ~ "Strength",
+												 dexterity ~ "Dexterity",
+												 constitution ~ "Constitution",
+												 intelligence ~ "Intelligence",
+												 wisdom ~ "Wisdom",
+												 charisma ~ "Charisma")) %>%
+	add_p(test = list(all_continuous() ~ "kruskal.test",
+										all_categorical() ~ "chisq.test"),
+				test.args = all_categorical() ~ list(simulate.p.value = TRUE)) %>%
+	bold_labels()
+	
 ```
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
