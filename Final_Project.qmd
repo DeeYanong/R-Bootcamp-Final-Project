@@ -7,18 +7,18 @@ execute:
   echo: false
 ---
 
-## Install/load Packages
+# Install/load Packages
 ```{r}
 #| message: false
 #| echo: false
-install.packages("pacman") #Pacman package will load and auto-install (if missing) packages in one line
+#install.packages("pacman") #Pacman package will load and auto-install (if missing) packages in one line
 
 pacman::p_load(gtsummary, skimr, dplyr, readr, tidyverse, ggplot2, broom, data.table, stringr)
 ```
 
-## Import D&D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)
+# Import D&D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)
 
-The Dungeons & Dragons dataset, imported from Kaggle, conta
+The Dungeons & Dragons dataset, imported from Kaggle, contains comprehensive information on character classes and races, equipment, monsters, and spells. For this project, I focus specifically on the monster dataset to explore which monster characteristics best predict challenge rating (CR), a measure of a monster's overall difficulty.
 
 ```{r}
 #| message: false
@@ -32,18 +32,27 @@ monsters <- read.csv(here::here("data","monsters.csv"))
 #spells <- read.csv("spells.csv")
 
 ```
-## Table 1 - use monsters dataset
-- Explore dataset, then create Table 1. 
-- Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma
-- Check for normality: armor_class, charisma, constitution, dexterity, hit_points, intelligence, strength, wisdom
-	- if bell-shaped use: ANOVA (aov)
-	- if skewed use: Kruskal-Wallis (kruskal.test)
-- Clean up data
+# Table 1 - use monsters dataset
+#- Explore dataset, then create Table 1. 
+#- Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma
+#- Check for normality: armor_class, charisma, constitution, dexterity, hit_points, intelligence, strength, wisdom
+	#- if bell-shaped use: ANOVA (aov)
+	#- if skewed use: Kruskal-Wallis (kruskal.test)
+#- Clean up data
 
 ```{r}
-skimr::skim(monsters)
-lapply(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom","challenge_rating")],hist)
+#skimr::skim(monsters) #quick overview of my dataset
 
+lapply(names(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom","challenge_rating")]), function(var){
+	hist(monsters[[var]],
+			 main = paste("Histogram of", var),
+			 xlab = var,
+			 col = "lightgreen",
+			 border = "white")
+})
+
+#| label: tbl-one
+#| tbl-cap: "Data summary stratified by size"
 monster_clean <- monsters %>%
 	mutate (dice_group = case_when(str_detect(hit_dice, "d6$") ~ "d6",
 																 str_detect(hit_dice, "d8$") ~ "d8",
@@ -62,8 +71,6 @@ monster_clean <- monsters %>%
 					challenge_rating = as.numeric(challenge_rating)) %>%
 	select(size,type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma,challenge_rating)
 
-#| label: tbl-one
-#| tbl-cap: "Data summary stratified by size"
 monster_clean %>%
 tbl_summary(by = size,
 						include = c(type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma,challenge_rating),
@@ -101,13 +108,13 @@ tbl_regression(linear_model,intercept = TRUE,
 							 						 constitution ~ "Constitution",
 							 						 strength ~ "Strength"))
 #| label: fig-one
-ggplot(monster_clean, aes(x = armor_class, y = challenge_rating)) +
+fig_one <- ggplot(monster_clean, aes(x = armor_class, y = challenge_rating)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", color = "red") +
   theme_minimal() +
   labs(title = "Relationship Between Armor Class and Challenge Rating", 
        x = "Armor Class", y = "Challenge Rating")
-ggsave(here::here("data","fig_one.png"), figure)
+ggsave(here::here("data","fig_one.png"), fig_one)
 
 #| label: fig-two
 ggplot(monster_clean, aes(x = hit_points, y = challenge_rating)) +

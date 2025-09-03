@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -103,511 +69,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="installload-packages" class="level2">
-<h2 class="anchored" data-anchor-id="installload-packages">Install/load Packages</h2>
-<p>Pacman package will load and auto-install (if missing) packages in one line</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("pacman")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(gtsummary, skimr, dplyr, readr, tidyverse, ggplot2, broom, data.table, stringr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="installload-packages" class="level1">
+<h1>Install/load Packages</h1>
 </section>
-<section id="import-dd-dataset-from-kaggle.-download-the-zip-file-httpswww.kaggle.comdatasetsshadowtime2000dungeons-dragonsresourcedownload" class="level2">
-<h2 class="anchored" data-anchor-id="import-dd-dataset-from-kaggle.-download-the-zip-file-httpswww.kaggle.comdatasetsshadowtime2000dungeons-dragonsresourcedownload">Import D&amp;D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)</h2>
-<p>General idea: Which monster stats best predicts challenge rating?</p>
-<p>Read csv files: classes, equipment, monsters, races, spells</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#DnD &lt;- unzip("C:/Users/deeya/OneDrive/Desktop/EMORY MPH/Thesis/R Bootcamp/R Bootcamp Final Project/DnD_Dataset.zip")</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#classes &lt;- read.csv("classes.csv")</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#equipment &lt;- read.csv("equipment.csv")</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>monsters <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"monsters.csv"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#races &lt;- read.csv("races.csv")</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#spells &lt;- read.csv("spells.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="import-dd-dataset-from-kaggle.-download-the-zip-file-httpswww.kaggle.comdatasetsshadowtime2000dungeons-dragonsresourcedownload" class="level1">
+<h1>Import D&amp;D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)</h1>
+<p>The Dungeons &amp; Dragons dataset, imported from Kaggle, contains comprehensive information on character classes and races, equipment, monsters, and spells. For this project, I focus specifically on the monster dataset to explore which monster characteristics best predict challenge rating (CR), a measure of a monster’s overall difficulty.</p>
 </section>
-<section id="table-1---use-monsters-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="table-1---use-monsters-dataset">Table 1 - use monsters dataset</h2>
-<ul>
-<li>Explore dataset, then create Table 1.</li>
-<li>Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma</li>
-<li>Check for normality: armor_class, charisma, constitution, dexterity, hit_points, intelligence, strength, wisdom
-<ul>
-<li>if bell-shaped use: ANOVA (aov)</li>
-<li>if skewed use: Kruskal-Wallis (kruskal.test)</li>
-</ul></li>
-<li>Clean up data</li>
-</ul>
+<section id="table-1---use-monsters-dataset" class="level1">
+<h1>Table 1 - use monsters dataset</h1>
+<p>#- Explore dataset, then create Table 1. #- Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma #- Check for normality: armor_class, charisma, constitution, dexterity, hit_points, intelligence, strength, wisdom #- if bell-shaped use: ANOVA (aov) #- if skewed use: Kruskal-Wallis (kruskal.test) #- Clean up data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(monsters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">monsters</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">322</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">32</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">character</td>
-<td style="text-align: left;">22</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">10</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 28%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 4%">
-<col style="width: 6%">
-<col style="width: 7%">
-<col style="width: 10%">
-<col style="width: 13%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">X_id</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">24</td>
-<td style="text-align: right;">24</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">322</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">index</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">322</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">name</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">322</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">size</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">type</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">subtype</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">258</td>
-<td style="text-align: right;">18</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">alignment</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">40</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">16</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">hit_dice</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">75</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">speed</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">17</td>
-<td style="text-align: right;">73</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">85</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">proficiencies</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">794</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">147</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">damage_vulnerabilities</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">57</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">damage_resistances</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">132</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">33</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">damage_immunities</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">115</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">31</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">condition_immunities</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">523</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">33</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">senses</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: right;">102</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">88</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">languages</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">91</td>
-<td style="text-align: right;">129</td>
-<td style="text-align: right;">85</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">special_abilities</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">4068</td>
-<td style="text-align: right;">56</td>
-<td style="text-align: right;">224</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">actions</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">4014</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">310</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">legendary_actions</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1559</td>
-<td style="text-align: right;">293</td>
-<td style="text-align: right;">19</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">url</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">17</td>
-<td style="text-align: right;">39</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">322</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">reactions</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">468</td>
-<td style="text-align: right;">311</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">other_speeds</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">133</td>
-<td style="text-align: right;">318</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 11%">
-<col style="width: 16%">
-<col style="width: 8%">
-<col style="width: 6%">
-<col style="width: 3%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 8%">
-<col style="width: 5%">
-<col style="width: 6%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">X</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">160.50</td>
-<td style="text-align: right;">93.10</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">80.25</td>
-<td style="text-align: right;">160.5</td>
-<td style="text-align: right;">240.75</td>
-<td style="text-align: right;">321</td>
-<td style="text-align: left;">▇▇▇▇▇</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">armor_class</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">14.03</td>
-<td style="text-align: right;">3.26</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">12.00</td>
-<td style="text-align: right;">13.0</td>
-<td style="text-align: right;">17.00</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: left;">▁▇▅▂▁</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">hit_points</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">81.29</td>
-<td style="text-align: right;">99.43</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">18.25</td>
-<td style="text-align: right;">45.0</td>
-<td style="text-align: right;">114.00</td>
-<td style="text-align: right;">676</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">strength</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">15.16</td>
-<td style="text-align: right;">6.74</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11.00</td>
-<td style="text-align: right;">16.0</td>
-<td style="text-align: right;">19.00</td>
-<td style="text-align: right;">30</td>
-<td style="text-align: left;">▂▃▇▃▂</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">dexterity</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">12.62</td>
-<td style="text-align: right;">3.20</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">10.00</td>
-<td style="text-align: right;">13.0</td>
-<td style="text-align: right;">15.00</td>
-<td style="text-align: right;">28</td>
-<td style="text-align: left;">▁▅▇▁▁</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">constitution</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">15.08</td>
-<td style="text-align: right;">4.51</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">12.00</td>
-<td style="text-align: right;">14.0</td>
-<td style="text-align: right;">18.00</td>
-<td style="text-align: right;">30</td>
-<td style="text-align: left;">▇▇▅▂▁</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">intelligence</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">7.75</td>
-<td style="text-align: right;">5.70</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">7.0</td>
-<td style="text-align: right;">12.00</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: left;">▇▅▃▂▁</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">wisdom</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11.69</td>
-<td style="text-align: right;">2.93</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">10.00</td>
-<td style="text-align: right;">12.0</td>
-<td style="text-align: right;">13.00</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: left;">▁▇▇▁▁</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">charisma</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">9.68</td>
-<td style="text-align: right;">5.79</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">5.00</td>
-<td style="text-align: right;">8.0</td>
-<td style="text-align: right;">14.00</td>
-<td style="text-align: right;">30</td>
-<td style="text-align: left;">▇▇▅▂▁</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">challenge_rating</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">4.54</td>
-<td style="text-align: right;">5.89</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.50</td>
-<td style="text-align: right;">2.0</td>
-<td style="text-align: right;">6.00</td>
-<td style="text-align: right;">30</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(monsters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "X"                      "X_id"                   "index"                 
- [4] "name"                   "size"                   "type"                  
- [7] "subtype"                "alignment"              "armor_class"           
-[10] "hit_points"             "hit_dice"               "speed"                 
-[13] "strength"               "dexterity"              "constitution"          
-[16] "intelligence"           "wisdom"                 "charisma"              
-[19] "proficiencies"          "damage_vulnerabilities" "damage_resistances"    
-[22] "damage_immunities"      "condition_immunities"   "senses"                
-[25] "languages"              "challenge_rating"       "special_abilities"     
-[28] "actions"                "legendary_actions"      "url"                   
-[31] "reactions"              "other_speeds"          </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(monsters[<span class="fu">c</span>(<span class="st">"armor_class"</span>,<span class="st">"charisma"</span>,<span class="st">"constitution"</span>,<span class="st">"dexterity"</span>,<span class="st">"hit_points"</span>,<span class="st">"intelligence"</span>,<span class="st">"strength"</span>,<span class="st">"wisdom"</span>)],hist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -664,8 +136,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_files/figure-html/unnamed-chunk-3-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$armor_class
+<pre><code>[[1]]
 $breaks
  [1]  4  6  8 10 12 14 16 18 20 22 24 26
 
@@ -680,7 +159,7 @@ $mids
  [1]  5  7  9 11 13 15 17 19 21 23 25
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -688,7 +167,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$charisma
+[[2]]
 $breaks
 [1]  0  5 10 15 20 25 30
 
@@ -702,7 +181,7 @@ $mids
 [1]  2.5  7.5 12.5 17.5 22.5 27.5
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -710,7 +189,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$constitution
+[[3]]
 $breaks
  [1]  8 10 12 14 16 18 20 22 24 26 28 30
 
@@ -725,7 +204,7 @@ $mids
  [1]  9 11 13 15 17 19 21 23 25 27 29
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -733,7 +212,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$dexterity
+[[4]]
 $breaks
  [1]  0  2  4  6  8 10 12 14 16 18 20 22 24 26 28
 
@@ -749,7 +228,7 @@ $mids
  [1]  1  3  5  7  9 11 13 15 17 19 21 23 25 27
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -757,7 +236,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$hit_points
+[[5]]
 $breaks
  [1]   0  50 100 150 200 250 300 350 400 450 500 550 600 650 700
 
@@ -773,7 +252,7 @@ $mids
  [1]  25  75 125 175 225 275 325 375 425 475 525 575 625 675
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -781,7 +260,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$intelligence
+[[6]]
 $breaks
  [1]  0  2  4  6  8 10 12 14 16 18 20 22 24 26
 
@@ -797,7 +276,7 @@ $mids
  [1]  1  3  5  7  9 11 13 15 17 19 21 23 25
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -805,7 +284,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$strength
+[[7]]
 $breaks
 [1]  0  5 10 15 20 25 30
 
@@ -819,7 +298,7 @@ $mids
 [1]  2.5  7.5 12.5 17.5 22.5 27.5
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -827,7 +306,7 @@ $equidist
 attr(,"class")
 [1] "histogram"
 
-$wisdom
+[[8]]
 $breaks
  [1]  2  4  6  8 10 12 14 16 18 20 22 24 26
 
@@ -842,7 +321,29 @@ $mids
  [1]  3  5  7  9 11 13 15 17 19 21 23 25
 
 $xname
-[1] "X[[i]]"
+[1] "monsters[[var]]"
+
+$equidist
+[1] TRUE
+
+attr(,"class")
+[1] "histogram"
+
+[[9]]
+$breaks
+[1]  0  5 10 15 20 25 30
+
+$counts
+[1] 235  39  23  13  11   1
+
+$density
+[1] 0.145962733 0.024223602 0.014285714 0.008074534 0.006832298 0.000621118
+
+$mids
+[1]  2.5  7.5 12.5 17.5 22.5 27.5
+
+$xname
+[1] "monsters[[var]]"
 
 $equidist
 [1] TRUE
@@ -850,58 +351,24 @@ $equidist
 attr(,"class")
 [1] "histogram"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>monster_clean <span class="ot">&lt;-</span> monsters <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span> (<span class="at">dice_group =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(hit_dice, <span class="st">"d6$"</span>) <span class="sc">~</span> <span class="st">"d6"</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="fu">str_detect</span>(hit_dice, <span class="st">"d8$"</span>) <span class="sc">~</span> <span class="st">"d8"</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="fu">str_detect</span>(hit_dice, <span class="st">"d10$"</span>) <span class="sc">~</span> <span class="st">"d10"</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="fu">str_detect</span>(hit_dice, <span class="st">"d12$"</span>) <span class="sc">~</span> <span class="st">"d12"</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="fu">str_detect</span>(hit_dice, <span class="st">"d20$"</span>) <span class="sc">~</span> <span class="st">"d20"</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"other"</span>),</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">armor_class =</span> <span class="fu">as.numeric</span>(armor_class),</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">charisma =</span> <span class="fu">as.numeric</span>(charisma),</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">constitution =</span> <span class="fu">as.numeric</span>(constitution),</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">dexterity =</span> <span class="fu">as.numeric</span>(dexterity),</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hit_points =</span> <span class="fu">as.numeric</span>(hit_points),</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                    <span class="at">intelligence =</span> <span class="fu">as.numeric</span>(intelligence),</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                    <span class="at">strength =</span> <span class="fu">as.numeric</span>(strength),</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                    <span class="at">wisdom =</span> <span class="fu">as.numeric</span>(wisdom)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(size,type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>monster_clean <span class="sc">%&gt;%</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_summary</span>(<span class="at">by =</span> size,</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                        <span class="at">include =</span> <span class="fu">c</span>(type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma),</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                        <span class="at">label =</span> <span class="fu">list</span>(type <span class="sc">~</span> <span class="st">"Class Type"</span>,</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                                                 armor_class <span class="sc">~</span> <span class="st">"Armor Class"</span>,</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                                                 hit_points <span class="sc">~</span> <span class="st">"Hit Points"</span>,</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                                                 dice_group <span class="sc">~</span> <span class="st">"Hit Dice"</span>,</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                                                 strength <span class="sc">~</span> <span class="st">"Strength"</span>,</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                                                 dexterity <span class="sc">~</span> <span class="st">"Dexterity"</span>,</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                                                 constitution <span class="sc">~</span> <span class="st">"Constitution"</span>,</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                                                 intelligence <span class="sc">~</span> <span class="st">"Intelligence"</span>,</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>                                                 wisdom <span class="sc">~</span> <span class="st">"Wisdom"</span>,</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                                                 charisma <span class="sc">~</span> <span class="st">"Charisma"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_p</span>(<span class="at">test =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"kruskal.test"</span>,</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"chisq.test"</span>),</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>                <span class="at">test.args =</span> <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="fu">list</span>(<span class="at">simulate.p.value =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ckcsyvatyz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ckcsyvatyz table {
+<div id="qkpctfrtzg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qkpctfrtzg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ckcsyvatyz thead, #ckcsyvatyz tbody, #ckcsyvatyz tfoot, #ckcsyvatyz tr, #ckcsyvatyz td, #ckcsyvatyz th {
+#qkpctfrtzg thead, #qkpctfrtzg tbody, #qkpctfrtzg tfoot, #qkpctfrtzg tr, #qkpctfrtzg td, #qkpctfrtzg th {
   border-style: none;
 }
 
-#ckcsyvatyz p {
+#qkpctfrtzg p {
   margin: 0;
   padding: 0;
 }
 
-#ckcsyvatyz .gt_table {
+#qkpctfrtzg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -927,12 +394,12 @@ attr(,"class")
   border-left-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_caption {
+#qkpctfrtzg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ckcsyvatyz .gt_title {
+#qkpctfrtzg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -944,7 +411,7 @@ attr(,"class")
   border-bottom-width: 0;
 }
 
-#ckcsyvatyz .gt_subtitle {
+#qkpctfrtzg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -956,7 +423,7 @@ attr(,"class")
   border-top-width: 0;
 }
 
-#ckcsyvatyz .gt_heading {
+#qkpctfrtzg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -968,13 +435,13 @@ attr(,"class")
   border-right-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_bottom_border {
+#qkpctfrtzg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_col_headings {
+#qkpctfrtzg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -989,7 +456,7 @@ attr(,"class")
   border-right-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_col_heading {
+#qkpctfrtzg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1009,7 +476,7 @@ attr(,"class")
   overflow-x: hidden;
 }
 
-#ckcsyvatyz .gt_column_spanner_outer {
+#qkpctfrtzg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1021,15 +488,15 @@ attr(,"class")
   padding-right: 4px;
 }
 
-#ckcsyvatyz .gt_column_spanner_outer:first-child {
+#qkpctfrtzg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ckcsyvatyz .gt_column_spanner_outer:last-child {
+#qkpctfrtzg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ckcsyvatyz .gt_column_spanner {
+#qkpctfrtzg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1041,11 +508,11 @@ attr(,"class")
   width: 100%;
 }
 
-#ckcsyvatyz .gt_spanner_row {
+#qkpctfrtzg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ckcsyvatyz .gt_group_heading {
+#qkpctfrtzg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1071,7 +538,7 @@ attr(,"class")
   text-align: left;
 }
 
-#ckcsyvatyz .gt_empty_group_heading {
+#qkpctfrtzg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1086,15 +553,15 @@ attr(,"class")
   vertical-align: middle;
 }
 
-#ckcsyvatyz .gt_from_md > :first-child {
+#qkpctfrtzg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ckcsyvatyz .gt_from_md > :last-child {
+#qkpctfrtzg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ckcsyvatyz .gt_row {
+#qkpctfrtzg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1113,7 +580,7 @@ attr(,"class")
   overflow-x: hidden;
 }
 
-#ckcsyvatyz .gt_stub {
+#qkpctfrtzg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1126,7 +593,7 @@ attr(,"class")
   padding-right: 5px;
 }
 
-#ckcsyvatyz .gt_stub_row_group {
+#qkpctfrtzg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1140,15 +607,15 @@ attr(,"class")
   vertical-align: top;
 }
 
-#ckcsyvatyz .gt_row_group_first td {
+#qkpctfrtzg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ckcsyvatyz .gt_row_group_first th {
+#qkpctfrtzg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ckcsyvatyz .gt_summary_row {
+#qkpctfrtzg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1158,16 +625,16 @@ attr(,"class")
   padding-right: 5px;
 }
 
-#ckcsyvatyz .gt_first_summary_row {
+#qkpctfrtzg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_first_summary_row.thick {
+#qkpctfrtzg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ckcsyvatyz .gt_last_summary_row {
+#qkpctfrtzg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1177,7 +644,7 @@ attr(,"class")
   border-bottom-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_grand_summary_row {
+#qkpctfrtzg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1187,7 +654,7 @@ attr(,"class")
   padding-right: 5px;
 }
 
-#ckcsyvatyz .gt_first_grand_summary_row {
+#qkpctfrtzg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1197,7 +664,7 @@ attr(,"class")
   border-top-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_last_grand_summary_row_top {
+#qkpctfrtzg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1207,11 +674,11 @@ attr(,"class")
   border-bottom-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_striped {
+#qkpctfrtzg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ckcsyvatyz .gt_table_body {
+#qkpctfrtzg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1220,7 +687,7 @@ attr(,"class")
   border-bottom-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_footnotes {
+#qkpctfrtzg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1234,7 +701,7 @@ attr(,"class")
   border-right-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_footnote {
+#qkpctfrtzg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1243,7 +710,7 @@ attr(,"class")
   padding-right: 5px;
 }
 
-#ckcsyvatyz .gt_sourcenotes {
+#qkpctfrtzg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1257,7 +724,7 @@ attr(,"class")
   border-right-color: #D3D3D3;
 }
 
-#ckcsyvatyz .gt_sourcenote {
+#qkpctfrtzg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1265,72 +732,72 @@ attr(,"class")
   padding-right: 5px;
 }
 
-#ckcsyvatyz .gt_left {
+#qkpctfrtzg .gt_left {
   text-align: left;
 }
 
-#ckcsyvatyz .gt_center {
+#qkpctfrtzg .gt_center {
   text-align: center;
 }
 
-#ckcsyvatyz .gt_right {
+#qkpctfrtzg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ckcsyvatyz .gt_font_normal {
+#qkpctfrtzg .gt_font_normal {
   font-weight: normal;
 }
 
-#ckcsyvatyz .gt_font_bold {
+#qkpctfrtzg .gt_font_bold {
   font-weight: bold;
 }
 
-#ckcsyvatyz .gt_font_italic {
+#qkpctfrtzg .gt_font_italic {
   font-style: italic;
 }
 
-#ckcsyvatyz .gt_super {
+#qkpctfrtzg .gt_super {
   font-size: 65%;
 }
 
-#ckcsyvatyz .gt_footnote_marks {
+#qkpctfrtzg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ckcsyvatyz .gt_asterisk {
+#qkpctfrtzg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ckcsyvatyz .gt_indent_1 {
+#qkpctfrtzg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ckcsyvatyz .gt_indent_2 {
+#qkpctfrtzg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ckcsyvatyz .gt_indent_3 {
+#qkpctfrtzg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ckcsyvatyz .gt_indent_4 {
+#qkpctfrtzg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ckcsyvatyz .gt_indent_5 {
+#qkpctfrtzg .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ckcsyvatyz .katex-display {
+#qkpctfrtzg .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ckcsyvatyz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qkpctfrtzg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1708,6 +1175,16 @@ N = 24<span class="gt_footnote_marks" style="white-space:nowrap;font-style:itali
 <td class="gt_row gt_center" headers="stat_6">5.0 (3.0, 7.0)</td>
 <td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
 </tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label" style="font-weight: bold">Challenge Rating</td>
+<td class="gt_row gt_center" headers="stat_1">22.0 (20.0, 23.0)</td>
+<td class="gt_row gt_center" headers="stat_2">9.0 (5.0, 14.0)</td>
+<td class="gt_row gt_center" headers="stat_3">4.0 (1.0, 8.0)</td>
+<td class="gt_row gt_center" headers="stat_4">1.0 (0.3, 3.0)</td>
+<td class="gt_row gt_center" headers="stat_5">0.3 (0.0, 0.5)</td>
+<td class="gt_row gt_center" headers="stat_6">0.0 (0.0, 0.1)</td>
+<td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
+</tr>
 </tbody><tfoot class="gt_footnotes">
 <tr class="odd">
 <td colspan="8" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> n (%); Median (Q1, Q3)</td>
@@ -1722,6 +1199,554 @@ N = 24<span class="gt_footnote_marks" style="white-space:nowrap;font-style:itali
 </div>
 </div>
 </div>
+<p><strong>?@tbl-one</strong> shows the descriptive statistics.There were 322 participants with a mean armor class of 14.0310559. There were 322 participants with a mean armor class of 81.2919255.</p>
+<section id="regression" class="level2">
+<h2 class="anchored" data-anchor-id="regression">Regression</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="grxpehrpua" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#grxpehrpua table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#grxpehrpua thead, #grxpehrpua tbody, #grxpehrpua tfoot, #grxpehrpua tr, #grxpehrpua td, #grxpehrpua th {
+  border-style: none;
+}
+
+#grxpehrpua p {
+  margin: 0;
+  padding: 0;
+}
+
+#grxpehrpua .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#grxpehrpua .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#grxpehrpua .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#grxpehrpua .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#grxpehrpua .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#grxpehrpua .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#grxpehrpua .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#grxpehrpua .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#grxpehrpua .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#grxpehrpua .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#grxpehrpua .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#grxpehrpua .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#grxpehrpua .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#grxpehrpua .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#grxpehrpua .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#grxpehrpua .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#grxpehrpua .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#grxpehrpua .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#grxpehrpua .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#grxpehrpua .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#grxpehrpua .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#grxpehrpua .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#grxpehrpua .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#grxpehrpua .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#grxpehrpua .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#grxpehrpua .gt_left {
+  text-align: left;
+}
+
+#grxpehrpua .gt_center {
+  text-align: center;
+}
+
+#grxpehrpua .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#grxpehrpua .gt_font_normal {
+  font-weight: normal;
+}
+
+#grxpehrpua .gt_font_bold {
+  font-weight: bold;
+}
+
+#grxpehrpua .gt_font_italic {
+  font-style: italic;
+}
+
+#grxpehrpua .gt_super {
+  font-size: 65%;
+}
+
+#grxpehrpua .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#grxpehrpua .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#grxpehrpua .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#grxpehrpua .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#grxpehrpua .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#grxpehrpua .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#grxpehrpua .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#grxpehrpua .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#grxpehrpua div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Characteristic</strong></th>
+<th id="estimate" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Beta</strong></th>
+<th id="conf.low" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>95% CI</strong></th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>p-value</strong></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">(Intercept)</td>
+<td class="gt_row gt_center" headers="estimate">-5.2</td>
+<td class="gt_row gt_center" headers="conf.low">-6.6, -3.7</td>
+<td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">Armor Class</td>
+<td class="gt_row gt_center" headers="estimate">0.28</td>
+<td class="gt_row gt_center" headers="conf.low">0.19, 0.37</td>
+<td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">Hit Points</td>
+<td class="gt_row gt_center" headers="estimate">0.04</td>
+<td class="gt_row gt_center" headers="conf.low">0.04, 0.05</td>
+<td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">Constitution</td>
+<td class="gt_row gt_center" headers="estimate">0.19</td>
+<td class="gt_row gt_center" headers="conf.low">0.07, 0.32</td>
+<td class="gt_row gt_center" headers="p.value">0.002</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">Strength</td>
+<td class="gt_row gt_center" headers="estimate">-0.05</td>
+<td class="gt_row gt_center" headers="conf.low">-0.11, 0.01</td>
+<td class="gt_row gt_center" headers="p.value">0.094</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="4" class="gt_sourcenote">Abbreviation: CI = Confidence Interval</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saving 7 x 5 in image
+`geom_smooth()` using formula = 'y ~ x'
+`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>?@fig-one</strong>, <strong>?@fig-two</strong>, <strong>?@fig-three</strong>, <strong>?@fig-four</strong> shows the relationship between challenge rating and armor class, hit points, constitution, strength.</p>
+</section>
+<section id="calculate-average-hp-based-on-constitution-modifier-and-hit-dice" class="level2">
+<h2 class="anchored" data-anchor-id="calculate-average-hp-based-on-constitution-modifier-and-hit-dice">Calculate Average HP based on Constitution modifier and Hit dice</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 13.5</code></pre>
+</div>
+</div>
+</section>
 </section>
 
 </main>
