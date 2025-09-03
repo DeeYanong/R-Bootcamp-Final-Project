@@ -2,12 +2,12 @@
 title: "Final Project - DnD Challenge Rating"
 author: "Dee Yanong"
 format: html
+results: hide
 editor: visual
 execute: 
   echo: false
   message: false
   warning: false
-  results: hide 
 ---
 
 ```{r}
@@ -48,13 +48,13 @@ monsters <- read.csv(here::here("data","monsters.csv"))
 
 #skimr::skim(monsters) #quick overview of my dataset
 
-lapply(names(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom","challenge_rating")]), function(var){
+invisible(lapply(names(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom","challenge_rating")]), function(var){
 	hist(monsters[[var]],
 			 main = paste("Histogram of", var),
 			 xlab = var,
 			 col = "lightgreen",
 			 border = "white")
-})
+}))
 
 monster_clean <- monsters %>%
 	mutate (dice_group = case_when(str_detect(hit_dice, "d6$") ~ "d6",
