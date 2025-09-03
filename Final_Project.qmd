@@ -103,7 +103,7 @@ hp <- list(n = nrow(monster_clean),
 					 mean_hp = mean(monster_clean$hit_points, na.rm = TRUE))
 	
 ```
-@tbl-one shows the descriptive statistics.There were `r armor$n` participants with a mean armor class of `r armor$mean_armor`. There were `r hp$n` participants with a mean armor class of `r hp$mean_hp`.
+@tbl-one shows the descriptive statistics.There were `r armor$n` participants with a mean armor class of `r armor$mean_armor`. There were `r hp$n` participants with a mean HP of `r hp$mean_hp`.
 
 ## Regression
 ```{r}
@@ -165,6 +165,8 @@ ggplot(monster_clean, aes(x = strength, y = challenge_rating)) +
 
 ## Calculate Average HP based on Constitution modifier and Hit dice
 
+Average HP = (Hit dice total or average) + (Constitution modifier * number of it dice)
+
 ```{r}
 # Calculate Average HP based on Constitution modifier and Hit dice
 avg_hp <- function(num_dice, die_size, constitution = 0) {
@@ -176,5 +178,6 @@ avg_hp <- function(num_dice, die_size, constitution = 0) {
 	return(total_avg)
 }
 
+#Test calculate average HP here:
 avg_hp(3,10,constitution = 10)
 ```

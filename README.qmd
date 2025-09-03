@@ -3,9 +3,15 @@ title: "README"
 format: html
 ---
 
+## Summary of the dataset
+The Dungeons & Dragons dataset, imported from Kaggle, contains comprehensive information on character classes and races, equipment, monsters, and spells. For this project, I focus specifically on the monster dataset to explore which monster characteristics best predict challenge rating (CR), a measure of a monster's overall difficulty.
+
 ## Instructions
+
+All codes are hidden when file is rendered.
 
 "Final_Project.qmd" contains all the necessary instructions to run the data. My thought process is included as comments in the file.
 
-## Summary of the dataset
-The Dungeons & Dragons dataset, imported from Kaggle, contains comprehensive information on character classes and races, equipment, monsters, and spells. For this project, I focus specifically on the monster dataset to explore which monster characteristics best predict challenge rating (CR), a measure of a monster's overall difficulty.
+Figure 1 has the code to save Figure one as a .png file.
+
+Average HP can be calculated using the code under the comment: #Test calculate average HP here:
