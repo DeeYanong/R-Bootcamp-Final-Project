@@ -5,24 +5,27 @@ format: html
 editor: visual
 execute: 
   echo: false
+  message: false
+  warning: false
+  results: hide 
 ---
 
-# Install/load Packages
 ```{r}
-#| message: false
-#| echo: false
+# Install/load Packages
+
 #install.packages("pacman") #Pacman package will load and auto-install (if missing) packages in one line
 
 pacman::p_load(gtsummary, skimr, dplyr, readr, tidyverse, ggplot2, broom, data.table, stringr)
 ```
 
-# Import D&D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)
 
 The Dungeons & Dragons dataset, imported from Kaggle, contains comprehensive information on character classes and races, equipment, monsters, and spells. For this project, I focus specifically on the monster dataset to explore which monster characteristics best predict challenge rating (CR), a measure of a monster's overall difficulty.
 
 ```{r}
-#| message: false
-#| echo: false
+
+
+# Import D&D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)
+
 #DnD <- unzip("C:/Users/deeya/OneDrive/Desktop/EMORY MPH/Thesis/R Bootcamp/R Bootcamp Final Project/DnD_Dataset.zip")
 
 #classes <- read.csv("classes.csv")
@@ -32,6 +35,9 @@ monsters <- read.csv(here::here("data","monsters.csv"))
 #spells <- read.csv("spells.csv")
 
 ```
+
+
+```{r}
 # Table 1 - use monsters dataset
 #- Explore dataset, then create Table 1. 
 #- Variables I want: size, type, armor_class, hit_points, hit_dice, strength, dexterity, constitution, intelligence, wisdom, charisma
@@ -40,7 +46,6 @@ monsters <- read.csv(here::here("data","monsters.csv"))
 	#- if skewed use: Kruskal-Wallis (kruskal.test)
 #- Clean up data
 
-```{r}
 #skimr::skim(monsters) #quick overview of my dataset
 
 lapply(names(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom","challenge_rating")]), function(var){
@@ -51,8 +56,6 @@ lapply(names(monsters[c("armor_class","charisma","constitution","dexterity","hit
 			 border = "white")
 })
 
-#| label: tbl-one
-#| tbl-cap: "Data summary stratified by size"
 monster_clean <- monsters %>%
 	mutate (dice_group = case_when(str_detect(hit_dice, "d6$") ~ "d6",
 																 str_detect(hit_dice, "d8$") ~ "d8",
@@ -70,7 +73,11 @@ monster_clean <- monsters %>%
 					wisdom = as.numeric(wisdom),
 					challenge_rating = as.numeric(challenge_rating)) %>%
 	select(size,type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma,challenge_rating)
+```
 
+```{r}
+#| label: tbl-one
+#| tbl-cap: "Data summary stratified by size"
 monster_clean %>%
 tbl_summary(by = size,
 						include = c(type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma,challenge_rating),
@@ -107,32 +114,45 @@ tbl_regression(linear_model,intercept = TRUE,
 							 						 hit_points ~ "Hit Points",
 							 						 constitution ~ "Constitution",
 							 						 strength ~ "Strength"))
+```
+## Figures
+
+```{r}
 #| label: fig-one
-fig_one <- ggplot(monster_clean, aes(x = armor_class, y = challenge_rating)) +
+ggplot(monster_clean, aes(x = armor_class, y = challenge_rating)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", color = "red") +
   theme_minimal() +
   labs(title = "Relationship Between Armor Class and Challenge Rating", 
        x = "Armor Class", y = "Challenge Rating")
-ggsave(here::here("data","fig_one.png"), fig_one)
+ggsave(here::here("data","fig_one.png"), device = "png")
+```
 
+```{r}
 #| label: fig-two
+
 ggplot(monster_clean, aes(x = hit_points, y = challenge_rating)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", color = "red") +
   theme_minimal() +
   labs(title = "Relationship Between Hit Points and Challenge Rating", 
        x = "Hit Points", y = "Challenge Rating")
+```
 
+```{r}
 #| label: fig-three
+
 ggplot(monster_clean, aes(x = constitution, y = challenge_rating)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", color = "red") +
   theme_minimal() +
   labs(title = "Relationship Between Constitution and Challenge Rating", 
        x = "Constitution", y = "Challenge Rating")
+```
 
+```{r}
 #| label: fig-four
+
 ggplot(monster_clean, aes(x = strength, y = challenge_rating)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", color = "red") +
@@ -146,7 +166,7 @@ ggplot(monster_clean, aes(x = strength, y = challenge_rating)) +
 ## Calculate Average HP based on Constitution modifier and Hit dice
 
 ```{r}
-
+# Calculate Average HP based on Constitution modifier and Hit dice
 avg_hp <- function(num_dice, die_size, constitution = 0) {
 	avg_die <- (1 + die_size)/2 #avg of rolling 1 die; die_size is the number of sides
 	base_avg <- (num_dice*avg_die) #multiply number of dice rolls with avg_die
