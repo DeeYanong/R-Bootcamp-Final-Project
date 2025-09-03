@@ -3,28 +3,31 @@ title: "Final Project - DnD Challenge Rating"
 author: "Dee Yanong"
 format: html
 editor: visual
+execute: 
+  echo: false
 ---
 
 ## Install/load Packages
-Pacman package will load and auto-install (if missing) packages in one line
 ```{r}
-#install.packages("pacman")
+#| message: false
+#| echo: false
+install.packages("pacman") #Pacman package will load and auto-install (if missing) packages in one line
 
 pacman::p_load(gtsummary, skimr, dplyr, readr, tidyverse, ggplot2, broom, data.table, stringr)
 ```
 
 ## Import D&D Dataset from Kaggle. Download the zip file: (https://www.kaggle.com/datasets/shadowtime2000/dungeons-dragons?resource=download)
 
-General idea: Which monster stats best predicts challenge rating?
-
-Read csv files: classes, equipment, monsters, races, spells
+The Dungeons & Dragons dataset, imported from Kaggle, conta
 
 ```{r}
+#| message: false
+#| echo: false
 #DnD <- unzip("C:/Users/deeya/OneDrive/Desktop/EMORY MPH/Thesis/R Bootcamp/R Bootcamp Final Project/DnD_Dataset.zip")
 
 #classes <- read.csv("classes.csv")
 #equipment <- read.csv("equipment.csv")
-monsters <- read.csv("monsters.csv")
+monsters <- read.csv(here::here("data","monsters.csv"))
 #races <- read.csv("races.csv")
 #spells <- read.csv("spells.csv")
 
@@ -39,8 +42,7 @@ monsters <- read.csv("monsters.csv")
 
 ```{r}
 skimr::skim(monsters)
-colnames(monsters)
-lapply(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom")],hist)
+lapply(monsters[c("armor_class","charisma","constitution","dexterity","hit_points","intelligence","strength","wisdom","challenge_rating")],hist)
 
 monster_clean <- monsters %>%
 	mutate (dice_group = case_when(str_detect(hit_dice, "d6$") ~ "d6",
@@ -56,12 +58,15 @@ monster_clean <- monsters %>%
 					hit_points = as.numeric(hit_points),
 					intelligence = as.numeric(intelligence),
 					strength = as.numeric(strength),
-					wisdom = as.numeric(wisdom)) %>%
-	select(size,type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma)
+					wisdom = as.numeric(wisdom),
+					challenge_rating = as.numeric(challenge_rating)) %>%
+	select(size,type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma,challenge_rating)
 
+#| label: tbl-one
+#| tbl-cap: "Data summary stratified by size"
 monster_clean %>%
 tbl_summary(by = size,
-						include = c(type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma),
+						include = c(type,armor_class,hit_points,dice_group,strength,dexterity,constitution,intelligence,wisdom,charisma,challenge_rating),
 						label = list(type ~ "Class Type",
 												 armor_class ~ "Armor Class",
 												 hit_points ~ "Hit Points",
@@ -71,10 +76,78 @@ tbl_summary(by = size,
 												 constitution ~ "Constitution",
 												 intelligence ~ "Intelligence",
 												 wisdom ~ "Wisdom",
-												 charisma ~ "Charisma")) %>%
+												 charisma ~ "Charisma",
+												 challenge_rating ~ "Challenge Rating")) %>%
 	add_p(test = list(all_continuous() ~ "kruskal.test",
 										all_categorical() ~ "chisq.test"),
 				test.args = all_categorical() ~ list(simulate.p.value = TRUE)) %>%
 	bold_labels()
+
+armor <- list(n = nrow(monster_clean),
+							mean_armor = mean(monster_clean$armor_class, na.rm = TRUE))
+hp <- list(n = nrow(monster_clean),
+					 mean_hp = mean(monster_clean$hit_points, na.rm = TRUE))
 	
+```
+@tbl-one shows the descriptive statistics.There were `r armor$n` participants with a mean armor class of `r armor$mean_armor`. There were `r hp$n` participants with a mean armor class of `r hp$mean_hp`.
+
+## Regression
+```{r}
+linear_model <- lm(challenge_rating ~ armor_class + hit_points + constitution + strength, data = monster_clean)
+
+tbl_regression(linear_model,intercept = TRUE,
+							 label = list(armor_class ~ "Armor Class",
+							 						 hit_points ~ "Hit Points",
+							 						 constitution ~ "Constitution",
+							 						 strength ~ "Strength"))
+#| label: fig-one
+ggplot(monster_clean, aes(x = armor_class, y = challenge_rating)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red") +
+  theme_minimal() +
+  labs(title = "Relationship Between Armor Class and Challenge Rating", 
+       x = "Armor Class", y = "Challenge Rating")
+ggsave(here::here("data","fig_one.png"), figure)
+
+#| label: fig-two
+ggplot(monster_clean, aes(x = hit_points, y = challenge_rating)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red") +
+  theme_minimal() +
+  labs(title = "Relationship Between Hit Points and Challenge Rating", 
+       x = "Hit Points", y = "Challenge Rating")
+
+#| label: fig-three
+ggplot(monster_clean, aes(x = constitution, y = challenge_rating)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red") +
+  theme_minimal() +
+  labs(title = "Relationship Between Constitution and Challenge Rating", 
+       x = "Constitution", y = "Challenge Rating")
+
+#| label: fig-four
+ggplot(monster_clean, aes(x = strength, y = challenge_rating)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red") +
+  theme_minimal() +
+  labs(title = "Relationship Between Strength and Challenge Rating", 
+       x = "Strength", y = "Challenge Rating")
+```
+
+@fig-one, @fig-two, @fig-three, @fig-four shows the relationship between challenge rating and armor class, hit points, constitution, strength.
+
+## Calculate Average HP based on Constitution modifier and Hit dice
+
+```{r}
+
+avg_hp <- function(num_dice, die_size, constitution = 0) {
+	avg_die <- (1 + die_size)/2 #avg of rolling 1 die; die_size is the number of sides
+	base_avg <- (num_dice*avg_die) #multiply number of dice rolls with avg_die
+	con_mod <- ((constitution/10)-2) #constitution modifier
+	con_bonus <- (num_dice*con_mod)
+	total_avg <- (base_avg + con_bonus)
+	return(total_avg)
+}
+
+avg_hp(3,10,constitution = 10)
 ```
